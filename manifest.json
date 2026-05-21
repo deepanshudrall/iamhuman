@@ -1,0 +1,16 @@
+﻿{
+  "name": "I Am Human — Daily Life Tracker",
+  "short_name": "IAmHuman",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#FDFAF7",
+  "theme_color": "#C1440E",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

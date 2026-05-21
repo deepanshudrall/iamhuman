@@ -1,0 +1,607 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>I Am Human</title>
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#C1440E">
+  <link rel="icon" href="icon.png">
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    :root{
+      --bg:#FDFAF7;
+      --surface:#FFFFFF;
+      --surface2:#FFF8F2;
+      --border:#EDE8E0;
+      --border2:#D3D1C7;
+      --text:#2C2C2A;
+      --text2:#5F5E5A;
+      --text3:#888780;
+      --accent:#C1440E;
+
+      --fd:Georgia,'Times New Roman',serif;
+      --fb:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
+    }
+
+    body{
+      background:var(--bg);
+      color:var(--text);
+      font-family:var(--fb);
+      min-height:100vh;
+    }
+
+    #app{
+      max-width:500px;
+      margin:auto;
+      min-height:100vh;
+    }
+
+    .header{
+      background:var(--surface2);
+      border-bottom:1px solid var(--border);
+      padding:18px 20px 14px;
+      position:sticky;
+      top:0;
+      z-index:100;
+    }
+
+    .header-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+
+    .app-title{
+      font-family:var(--fd);
+      font-size:24px;
+    }
+
+    .date{
+      font-size:12px;
+      color:var(--text3);
+      margin-top:3px;
+    }
+
+    .quote{
+      margin-top:10px;
+      background:#F5EFE8;
+      padding:8px 10px;
+      border-left:3px solid var(--accent);
+      border-radius:0 6px 6px 0;
+      font-size:12px;
+      color:var(--text2);
+      font-style:italic;
+    }
+
+    .stats-btn{
+      padding:6px 12px;
+      border:1px solid var(--border2);
+      background:white;
+      border-radius:8px;
+      cursor:pointer;
+      font-size:12px;
+    }
+
+    .score{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      padding:18px 20px 0;
+    }
+
+    .score-big{
+      font-size:30px;
+      font-family:var(--fd);
+    }
+
+    .score-small{
+      color:var(--text3);
+      font-size:14px;
+    }
+
+    .progress{
+      margin-top:8px;
+      height:4px;
+      background:var(--border);
+      border-radius:999px;
+      overflow:hidden;
+    }
+
+    .progress-fill{
+      height:100%;
+      background:var(--accent);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      padding:16px;
+    }
+
+    .card{
+      background:white;
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px;
+      position:relative;
+      cursor:pointer;
+      transition:0.2s;
+    }
+
+    .card:hover{
+      transform:translateY(-2px);
+    }
+
+    .card.done{
+      background:#FEF0EB;
+    }
+
+    .card-stripe{
+      position:absolute;
+      top:0;
+      left:0;
+      width:4px;
+      height:100%;
+      border-radius:14px 0 0 14px;
+    }
+
+    .card-emoji{
+      font-size:22px;
+      margin-bottom:5px;
+    }
+
+    .card-title{
+      font-size:14px;
+      font-weight:600;
+    }
+
+    .card-tag{
+      font-size:11px;
+      color:var(--text3);
+      margin-top:4px;
+      line-height:1.4;
+    }
+
+    .check{
+      position:absolute;
+      top:10px;
+      right:10px;
+      width:20px;
+      height:20px;
+      border-radius:50%;
+      border:1px solid var(--border2);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:12px;
+    }
+
+    .card.done .check{
+      background:#0F6E56;
+      color:white;
+      border:none;
+    }
+
+    .modal{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.45);
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+    }
+
+    .modal.active{
+      display:flex;
+    }
+
+    .modal-content{
+      width:100%;
+      max-width:500px;
+      background:white;
+      border-radius:20px 20px 0 0;
+      padding:20px;
+      animation:up .25s ease;
+    }
+
+    @keyframes up{
+      from{
+        transform:translateY(40px);
+        opacity:0;
+      }
+      to{
+        transform:translateY(0);
+        opacity:1;
+      }
+    }
+
+    .modal-title{
+      font-size:22px;
+      font-family:var(--fd);
+    }
+
+    .modal-tag{
+      font-size:12px;
+      color:var(--text3);
+      margin-top:4px;
+    }
+
+    .section{
+      margin-top:18px;
+    }
+
+    .section-label{
+      font-size:11px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      color:var(--text3);
+      margin-bottom:8px;
+      font-weight:700;
+    }
+
+    textarea{
+      width:100%;
+      min-height:90px;
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:10px;
+      resize:none;
+      outline:none;
+      font-family:inherit;
+    }
+
+    textarea:focus{
+      border-color:var(--accent);
+    }
+
+    .stars{
+      display:flex;
+      gap:8px;
+      margin-top:8px;
+    }
+
+    .star{
+      font-size:28px;
+      cursor:pointer;
+      color:#D3D1C7;
+    }
+
+    .star.active{
+      color:var(--accent);
+    }
+
+    .save{
+      width:100%;
+      margin-top:18px;
+      border:none;
+      background:var(--accent);
+      color:white;
+      padding:14px;
+      border-radius:12px;
+      font-size:14px;
+      cursor:pointer;
+    }
+
+    .footer{
+      padding:20px;
+      text-align:center;
+      color:var(--text3);
+      font-size:11px;
+    }
+
+    .perfect{
+      margin:10px 16px 0;
+      background:#EDFAF5;
+      border:1px solid #9FE1CB;
+      padding:10px;
+      border-radius:10px;
+      text-align:center;
+      color:#0F6E56;
+      font-size:13px;
+      font-weight:600;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="app"></div>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+
+    <div class="modal-title" id="modalTitle"></div>
+    <div class="modal-tag" id="modalTag"></div>
+
+    <div class="section">
+      <div class="section-label">What did you do today?</div>
+      <textarea id="note"></textarea>
+    </div>
+
+    <div class="section">
+      <div class="section-label">How well did you show up?</div>
+      <div class="stars" id="stars"></div>
+    </div>
+
+    <button class="save" onclick="saveArea()">Save</button>
+
+  </div>
+</div>
+
+<script>
+const AREAS = [
+{
+  id:'physical',
+  name:'Physical Health',
+  emoji:'🏃',
+  accent:'#C1440E',
+  tag:'Move your body. Fuel it well.'
+},
+{
+  id:'mental',
+  name:'Mental Health',
+  emoji:'🧠',
+  accent:'#0F6E56',
+  tag:'A calm mind is your greatest asset.'
+},
+{
+  id:'relationships',
+  name:'Relationships',
+  emoji:'❤️',
+  accent:'#993556',
+  tag:'Connection is the antidote.'
+},
+{
+  id:'career',
+  name:'Career',
+  emoji:'💼',
+  accent:'#854F0B',
+  tag:'Work with purpose.'
+},
+{
+  id:'financial',
+  name:'Financial',
+  emoji:'💰',
+  accent:'#3B6D11',
+  tag:'Security buys freedom.'
+},
+{
+  id:'growth',
+  name:'Growth',
+  emoji:'📚',
+  accent:'#185FA5',
+  tag:'Improve a little daily.'
+},
+{
+  id:'spiritual',
+  name:'Spiritual',
+  emoji:'✨',
+  accent:'#534AB7',
+  tag:'Be still. Connect.'
+},
+{
+  id:'community',
+  name:'Community',
+  emoji:'🤝',
+  accent:'#993C1D',
+  tag:'Belong somewhere.'
+}
+];
+
+const QUOTES = [
+'You are human. Rest, connect, grow.',
+'Small intentional moments build great days.',
+'You do not need perfection. Just presence.',
+'Take care of yourself before the world asks things from you.'
+];
+
+let selected = null;
+let rating = 3;
+
+const today = new Date().toDateString();
+
+let logs = JSON.parse(localStorage.getItem(today) || '{}');
+
+function render(){
+
+  const done = Object.keys(logs).length;
+  const pct = Math.round(done / AREAS.length * 100);
+
+  document.getElementById('app').innerHTML = `
+  
+  <div class="header">
+
+    <div class="header-top">
+
+      <div>
+        <div class="app-title">I am human 🌿</div>
+        <div class="date">${new Date().toDateString()}</div>
+      </div>
+
+      <button class="stats-btn">${done}/8</button>
+
+    </div>
+
+    <div class="quote">
+      ${QUOTES[Math.floor(Math.random() * QUOTES.length)]}
+    </div>
+
+  </div>
+
+  <div class="score">
+
+    <svg width="56" height="56">
+
+      <circle
+        cx="28"
+        cy="28"
+        r="22"
+        stroke="#EDE8E0"
+        stroke-width="5"
+        fill="none"
+      />
+
+      <circle
+        cx="28"
+        cy="28"
+        r="22"
+        stroke="#C1440E"
+        stroke-width="5"
+        fill="none"
+        stroke-linecap="round"
+        transform="rotate(-90 28 28)"
+        stroke-dasharray="${2*Math.PI*22}"
+        stroke-dashoffset="${2*Math.PI*22*(1-pct/100)}"
+      />
+
+    </svg>
+
+    <div>
+
+      <div class="score-big">
+        ${done}<span class="score-small">/8</span>
+      </div>
+
+      <div class="score-small">
+        areas checked in today
+      </div>
+
+      <div class="progress">
+        <div class="progress-fill" style="width:${pct}%"></div>
+      </div>
+
+    </div>
+
+  </div>
+
+  ${
+    done === 8
+    ? `<div class="perfect">🎉 Perfect human day.</div>`
+    : ''
+  }
+
+  <div class="grid">
+
+    ${AREAS.map(area => `
+
+      <div
+        class="card ${logs[area.id] ? 'done' : ''}"
+        onclick="openArea('${area.id}')"
+      >
+
+        <div
+          class="card-stripe"
+          style="background:${area.accent}"
+        ></div>
+
+        <div class="card-emoji">${area.emoji}</div>
+
+        <div class="card-title">${area.name}</div>
+
+        <div class="card-tag">${area.tag}</div>
+
+        <div class="check">
+          ${logs[area.id] ? '✓' : ''}
+        </div>
+
+      </div>
+
+    `).join('')}
+
+  </div>
+
+  <div class="footer">
+    Works fully offline · Data saved locally
+  </div>
+  `;
+}
+
+function openArea(id){
+
+  selected = AREAS.find(a => a.id === id);
+
+  document.getElementById('modal')
+    .classList.add('active');
+
+  document.getElementById('modalTitle')
+    .textContent = selected.name;
+
+  document.getElementById('modalTag')
+    .textContent = selected.tag;
+
+  document.getElementById('note').value =
+    logs[id]?.note || '';
+
+  renderStars();
+}
+
+function renderStars(){
+
+  document.getElementById('stars').innerHTML =
+    [1,2,3,4,5].map(n => `
+      <span
+        class="star ${n <= rating ? 'active' : ''}"
+        onclick="setRating(${n})"
+      >
+        ★
+      </span>
+    `).join('');
+}
+
+function setRating(n){
+  rating = n;
+  renderStars();
+}
+
+function saveArea(){
+
+  logs[selected.id] = {
+    note:document.getElementById('note').value,
+    rating
+  };
+
+  localStorage.setItem(
+    today,
+    JSON.stringify(logs)
+  );
+
+  document.getElementById('modal')
+    .classList.remove('active');
+
+  render();
+}
+
+window.onclick = function(e){
+
+  if(e.target.id === 'modal'){
+
+    document.getElementById('modal')
+      .classList.remove('active');
+  }
+}
+
+render();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(() => console.log('SW registered'))
+      .catch(err => console.log(err));
+  });
+}
+</script>
+
+</body>
+</html>
+```
