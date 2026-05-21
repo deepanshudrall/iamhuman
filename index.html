@@ -1,25 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 
 <title>I Am Human</title>
 
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.png">
+
 <meta name="theme-color" content="#C1440E">
 
+<!-- iPhone PWA -->
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="I Am Human">
-
 <link rel="apple-touch-icon" href="icon.png">
 
 <style>
+
 *{
   margin:0;
   padding:0;
   box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
 }
 
 :root{
@@ -37,21 +42,30 @@
   --fb:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
 }
 
+html,
 body{
+  width:100%;
+  min-height:100%;
   background:var(--bg);
+  overflow-x:hidden;
+}
+
+body{
   color:var(--text);
   font-family:var(--fb);
-  min-height:100vh;
 }
 
 #app{
-  max-width:500px;
+  width:100%;
+  max-width:520px;
   margin:auto;
   min-height:100vh;
+  padding-bottom:40px;
 }
 
 .header{
-  background:var(--surface2);
+  background:rgba(255,248,242,.92);
+  backdrop-filter:blur(12px);
   border-bottom:1px solid var(--border);
   padding:18px 20px 14px;
   position:sticky;
@@ -67,7 +81,7 @@ body{
 
 .app-title{
   font-family:var(--fd);
-  font-size:24px;
+  font-size:26px;
 }
 
 .date{
@@ -79,19 +93,19 @@ body{
 .quote{
   margin-top:10px;
   background:#F5EFE8;
-  padding:8px 10px;
+  padding:10px;
   border-left:3px solid var(--accent);
-  border-radius:0 6px 6px 0;
+  border-radius:0 8px 8px 0;
   font-size:12px;
   color:var(--text2);
   font-style:italic;
 }
 
 .stats-btn{
-  padding:6px 12px;
+  padding:7px 12px;
   border:1px solid var(--border2);
   background:white;
-  border-radius:8px;
+  border-radius:10px;
   font-size:12px;
 }
 
@@ -99,11 +113,11 @@ body{
   display:flex;
   gap:14px;
   align-items:center;
-  padding:18px 20px 0;
+  padding:20px 20px 0;
 }
 
 .score-big{
-  font-size:30px;
+  font-size:34px;
   font-family:var(--fd);
 }
 
@@ -114,7 +128,7 @@ body{
 
 .progress{
   margin-top:8px;
-  height:4px;
+  height:5px;
   background:var(--border);
   border-radius:999px;
   overflow:hidden;
@@ -128,22 +142,22 @@ body{
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:10px;
-  padding:16px;
+  gap:12px;
+  padding:18px;
 }
 
 .card{
   background:white;
   border:1px solid var(--border);
-  border-radius:14px;
-  padding:14px;
+  border-radius:18px;
+  padding:16px;
   position:relative;
+  transition:.2s;
   cursor:pointer;
-  transition:0.2s;
 }
 
 .card:active{
-  transform:scale(0.98);
+  transform:scale(.98);
 }
 
 .card.done{
@@ -156,32 +170,32 @@ body{
   left:0;
   width:4px;
   height:100%;
-  border-radius:14px 0 0 14px;
+  border-radius:18px 0 0 18px;
 }
 
 .card-emoji{
-  font-size:22px;
-  margin-bottom:5px;
+  font-size:24px;
+  margin-bottom:6px;
 }
 
 .card-title{
   font-size:14px;
-  font-weight:600;
+  font-weight:700;
 }
 
 .card-tag{
   font-size:11px;
   color:var(--text3);
-  margin-top:4px;
-  line-height:1.4;
+  margin-top:5px;
+  line-height:1.45;
 }
 
 .check{
   position:absolute;
-  top:10px;
-  right:10px;
-  width:20px;
-  height:20px;
+  top:12px;
+  right:12px;
+  width:22px;
+  height:22px;
   border-radius:50%;
   border:1px solid var(--border2);
   display:flex;
@@ -199,10 +213,11 @@ body{
 .modal{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.45);
+  background:rgba(0,0,0,.45);
   display:none;
   align-items:flex-end;
   justify-content:center;
+  z-index:999;
 }
 
 .modal.active{
@@ -211,16 +226,16 @@ body{
 
 .modal-content{
   width:100%;
-  max-width:500px;
+  max-width:520px;
   background:white;
-  border-radius:20px 20px 0 0;
-  padding:20px;
-  animation:up .25s ease;
+  border-radius:24px 24px 0 0;
+  padding:22px;
+  animation:up .22s ease;
 }
 
 @keyframes up{
   from{
-    transform:translateY(40px);
+    transform:translateY(50px);
     opacity:0;
   }
   to{
@@ -230,18 +245,18 @@ body{
 }
 
 .modal-title{
-  font-size:22px;
+  font-size:24px;
   font-family:var(--fd);
 }
 
 .modal-tag{
   font-size:12px;
   color:var(--text3);
-  margin-top:4px;
+  margin-top:5px;
 }
 
 .section{
-  margin-top:18px;
+  margin-top:20px;
 }
 
 .section-label{
@@ -255,13 +270,14 @@ body{
 
 textarea{
   width:100%;
-  min-height:90px;
+  min-height:100px;
   border:1px solid var(--border);
-  border-radius:10px;
-  padding:10px;
+  border-radius:14px;
+  padding:12px;
   resize:none;
   outline:none;
   font-family:inherit;
+  font-size:15px;
 }
 
 textarea:focus{
@@ -275,7 +291,7 @@ textarea:focus{
 }
 
 .star{
-  font-size:28px;
+  font-size:30px;
   cursor:pointer;
   color:#D3D1C7;
 }
@@ -286,34 +302,35 @@ textarea:focus{
 
 .save{
   width:100%;
-  margin-top:18px;
+  margin-top:22px;
   border:none;
   background:var(--accent);
   color:white;
-  padding:14px;
-  border-radius:12px;
-  font-size:14px;
-  cursor:pointer;
+  padding:15px;
+  border-radius:14px;
+  font-size:15px;
+  font-weight:600;
 }
 
 .footer{
-  padding:20px;
+  padding:24px;
   text-align:center;
   color:var(--text3);
   font-size:11px;
 }
 
 .perfect{
-  margin:10px 16px 0;
+  margin:12px 18px 0;
   background:#EDFAF5;
   border:1px solid #9FE1CB;
-  padding:10px;
-  border-radius:10px;
+  padding:12px;
+  border-radius:12px;
   text-align:center;
   color:#0F6E56;
   font-size:13px;
   font-weight:600;
 }
+
 </style>
 </head>
 
@@ -323,6 +340,7 @@ textarea:focus{
 
 <div class="modal" id="modal">
   <div class="modal-content">
+
     <div class="modal-title" id="modalTitle"></div>
     <div class="modal-tag" id="modalTag"></div>
 
@@ -337,10 +355,18 @@ textarea:focus{
     </div>
 
     <button class="save" onclick="saveArea()">Save</button>
+
   </div>
 </div>
 
 <script>
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js');
+  });
+}
+
 const AREAS = [
 {
   id:'physical',
@@ -420,20 +446,22 @@ function render(){
   const pct = Math.round(done / AREAS.length * 100);
 
   document.getElementById('app').innerHTML = `
-  
+
   <div class="header">
 
     <div class="header-top">
+
       <div>
         <div class="app-title">I am human 🌿</div>
         <div class="date">${new Date().toDateString()}</div>
       </div>
 
       <div class="stats-btn">${done}/8</div>
+
     </div>
 
     <div class="quote">
-      ${QUOTES[Math.floor(Math.random() * QUOTES.length)]}
+      ${QUOTES[Math.floor(Math.random()*QUOTES.length)]}
     </div>
 
   </div>
@@ -467,6 +495,7 @@ function render(){
     </svg>
 
     <div>
+
       <div class="score-big">
         ${done}<span class="score-small">/8</span>
       </div>
@@ -478,6 +507,7 @@ function render(){
       <div class="progress">
         <div class="progress-fill" style="width:${pct}%"></div>
       </div>
+
     </div>
 
   </div>
@@ -519,8 +549,9 @@ function render(){
   </div>
 
   <div class="footer">
-    I Am Human • Daily Life Tracker
+    Works offline · Saved locally on your device
   </div>
+
   `;
 }
 
@@ -528,17 +559,14 @@ function openArea(id){
 
   selected = AREAS.find(a => a.id === id);
 
-  document.getElementById('modal')
-    .classList.add('active');
+  document.getElementById('modal').classList.add('active');
 
-  document.getElementById('modalTitle')
-    .textContent = selected.name;
+  document.getElementById('modalTitle').textContent = selected.name;
 
-  document.getElementById('modalTag')
-    .textContent = selected.tag;
+  document.getElementById('modalTag').textContent = selected.tag;
 
-  document.getElementById('note')
-    .value = logs[id]?.note || '';
+  document.getElementById('note').value =
+    logs[id]?.note || '';
 
   rating = logs[id]?.rating || 3;
 
@@ -572,13 +600,9 @@ function saveArea(){
     rating
   };
 
-  localStorage.setItem(
-    today,
-    JSON.stringify(logs)
-  );
+  localStorage.setItem(today, JSON.stringify(logs));
 
-  document.getElementById('modal')
-    .classList.remove('active');
+  document.getElementById('modal').classList.remove('active');
 
   render();
 }
@@ -586,13 +610,13 @@ function saveArea(){
 window.onclick = function(e){
 
   if(e.target.id === 'modal'){
-
     document.getElementById('modal')
       .classList.remove('active');
   }
 }
 
 render();
+
 </script>
 
 </body>
